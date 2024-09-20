@@ -387,7 +387,7 @@
 			"offset": 54,
 			"saveFlag": "outfit3",
 			"type": "Outfit",
-			"flag": "Minor"
+			"flag": "Junk"
 		},
 		{
 			"itemName": "Swimsuit Outfit",
@@ -395,7 +395,7 @@
 			"offset": 55,
 			"saveFlag": "outfit4",
 			"type": "Outfit",
-			"flag": "Minor"
+			"flag": "Junk"
 		},
 		{
 			"itemName": "Tippsie Outfit",
@@ -403,7 +403,7 @@
 			"offset": 56,
 			"saveFlag": "outfit1",
 			"type": "Outfit",
-			"flag": "Minor"
+			"flag": "Junk"
 		},
 		{
 			"itemName": "Little Dude Outfit",
@@ -411,7 +411,7 @@
 			"offset": 57,
 			"saveFlag": "outfit6",
 			"type": "Outfit",
-			"flag": "Minor"
+			"flag": "Junk"
 		},
 		{
 			"itemName": "Tiger Jenny Outfit",
@@ -419,7 +419,7 @@
 			"offset": 58,
 			"saveFlag": "outfit5",
 			"type": "Outfit",
-			"flag": "Minor"
+			"flag": "Junk"
 		},
 		{
 			"itemName": "Ittle Dew 1 Outfit",
@@ -427,7 +427,7 @@
 			"offset": 59,
 			"saveFlag": "outfit2",
 			"type": "Outfit",
-			"flag": "Minor"
+			"flag": "Junk"
 		},
 		{
 			"itemName": "Delinquint Outfit",
@@ -435,7 +435,7 @@
 			"offset": 60,
 			"saveFlag": "outfit7",
 			"type": "Outfit",
-			"flag": "Minor"
+			"flag": "Junk"
 		},
 		{
 			"itemName": "Jenny Berry Outfit",
@@ -443,7 +443,7 @@
 			"offset": 61,
 			"saveFlag": "outfit10",
 			"type": "Outfit",
-			"flag": "Minor"
+			"flag": "Junk"
 		},
 		{
 			"itemName": "Apathetic Frog Outfit",
@@ -451,7 +451,7 @@
 			"offset": 62,
 			"saveFlag": "outfit8",
 			"type": "Outfit",
-			"flag": "Minor"
+			"flag": "Junk"
 		},
 		{
 			"itemName": "That Guy Outfit",
@@ -459,7 +459,7 @@
 			"offset": 63,
 			"saveFlag": "outfit9",
 			"type": "Outfit",
-			"flag": "Minor"
+			"flag": "Junk"
 		},
 		{
 			"itemName": "Big Old Pile o' Loot",
