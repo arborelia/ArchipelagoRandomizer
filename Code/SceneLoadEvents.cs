@@ -1,4 +1,5 @@
 ﻿using Archipelago.MultiClient.Net.Models;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -72,6 +73,15 @@ namespace ArchipelagoRandomizer
 		}
 
 		/// <summary>
+		/// Adds Ice damage to the accepted damge types for the Lonely Road meteor that blocks Moon Garden
+		/// </summary>
+		private void FixLonelyRoadMeteor()
+		{
+			DamageType iceDamage = Resources.FindObjectsOfTypeAll<DamageType>().First((x) => x.name == "dmg_Cold");
+			GameObject.Find("LevelRoot").transform.Find("A/Doors/CaveA (night flames and meteor)/PuzzleStuff/Meteor/BreakableMeteor/Collision").GetComponent<HitTrigger>()._damageTypes.Add(iceDamage);
+		}
+
+		/// <summary>
 		/// Helps prevent softlocks or near-softlocks when phasing by
 		/// resetting your spawn point to the point from before the <br/>
 		/// softlock. This applies to cases of entering Tomb of Simulacrum,
@@ -108,6 +118,9 @@ namespace ArchipelagoRandomizer
 				case "Deep20":
 					SceneDoor.GetDoorForName("Deep20")._saveStartPos = false;
 					SceneDoor.GetDoorForName("Deep20_2")._saveStartPos = false;
+					return;
+				case "Deep23":
+					SceneDoor.GetDoorForName("Deep23")._saveStartPos = false;
 					return;
 			}
 
@@ -252,6 +265,9 @@ namespace ArchipelagoRandomizer
 				case "StarWoods":
 					if (DoModifyShardReqs)
 						ModifyShardDungeonReqs();
+					break;
+				case "LonelyRoad":
+					FixLonelyRoadMeteor();
 					break;
 			}
 

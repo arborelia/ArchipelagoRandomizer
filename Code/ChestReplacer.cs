@@ -27,8 +27,8 @@ namespace ArchipelagoRandomizer
 				new ChestCrystalColorData.CrystalColors("DarkGrey", "DarkGrey", "LightGrey"))
 			},
 			{ new("Junk", true,
-				new ChestCrystalColorData.ChestColors("LightGrey", "Grey", "Grey"),
-				new ChestCrystalColorData.CrystalColors("Silver", "Silver", "Grey"))
+				new ChestCrystalColorData.ChestColors("Burgundy", "Grey", "Grey"),
+				new ChestCrystalColorData.CrystalColors("Silver", "Burgundy", "LightGrey"))
 			},
 			{ new("Filler", false,
 				new ChestCrystalColorData.ChestColors("Cyan", "Grey", "Grey"),
@@ -79,8 +79,13 @@ namespace ArchipelagoRandomizer
 		{
 			ItemHandler.ItemData.Item item = ItemRandomizer.Instance.GetItemForLocation(SceneManager.GetActiveScene().name, dummyAction._saveName, out var scoutedItemInfo);
 
-			// Leave vanila if major
-			if (item != null && CheckItemFlags(item, ItemHandler.ItemFlags.Major))
+			// Leave vanilla if major, including region connectors
+			if (
+				item != null && (
+					CheckItemFlags(item, ItemHandler.ItemFlags.Major)
+					|| item.Type == ItemHandler.ItemTypes.RegionConnector
+				)
+			)
 				return;
 
 			ChestCrystalColorData colors = null;
