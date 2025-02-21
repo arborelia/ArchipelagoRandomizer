@@ -4,235 +4,242 @@ using UnityEngine.SceneManagement;
 
 namespace ArchipelagoRandomizer
 {
-	class ChestReplacer
-	{
-		private static ChestReplacer instance;
-		private const string assetPath = $"{PluginInfo.PLUGIN_NAME}/Assets/";
-		private static readonly List<ChestCrystalColorData> chestCrystalColors = new()
-		{
-			{ new("Key", true,
-				new ChestCrystalColorData.ChestColors("Yellow", "DarkGrey", "Grey"),
-				new ChestCrystalColorData.CrystalColors("Gold", "Gold", "Yellow"))
-			},
-			{ new("Macguffin", true,
-				new ChestCrystalColorData.ChestColors("Purple", "LightGrey", "Pearl"),
-				new ChestCrystalColorData.CrystalColors("Purple", "Purple", "White"))
-			},
-			{ new("Minor", true,
-				new ChestCrystalColorData.ChestColors("Brown", "DarkYellow", "Gold"),
-				new ChestCrystalColorData.CrystalColors("Brown", "Brown", "Yellow"))
-			},
-			{ new("Shard", true,
-				new ChestCrystalColorData.ChestColors("DarkGrey", "Grey", "Grey"),
-				new ChestCrystalColorData.CrystalColors("DarkGrey", "DarkGrey", "LightGrey"))
-			},
-			{ new("Junk", true,
-				new ChestCrystalColorData.ChestColors("Burgundy", "Grey", "Grey"),
-				new ChestCrystalColorData.CrystalColors("Silver", "Silver", "Burgundy"))
-			},
-			{ new("Filler", false,
-				new ChestCrystalColorData.ChestColors("Cyan", "Grey", "Grey"),
-				new ChestCrystalColorData.CrystalColors("Cyan", "Cyan", "Cyan"))
-			},
-			{ new("Useful", false,
-				new ChestCrystalColorData.ChestColors("Blue", "DarkYellow", "Gold"),
-				new ChestCrystalColorData.CrystalColors("Blue", "Blue", "Blue"))
-			},
-			{ new("NeverExclude", false,
-				new ChestCrystalColorData.ChestColors("Orange", "Grey", "Grey"),
-				new ChestCrystalColorData.CrystalColors("Orange", "Orange", "Orange"))
-			},
-			{ new("Advancement", false,
-				new ChestCrystalColorData.ChestColors("Orange", "DarkYellow", "Gold"),
-				new ChestCrystalColorData.CrystalColors("Orange", "Orange", "Yellow"))
-			},
-			{ new("RegionConnector", false,
-				new ChestCrystalColorData.ChestColors("Orange", "Grey", "Grey"),
-				new ChestCrystalColorData.CrystalColors("Orange", "Orange", "Orange"))
-			},
-			{ new("Empty", false,
-				new ChestCrystalColorData.ChestColors("LightGrey", "Grey", "Grey"),
-				new ChestCrystalColorData.CrystalColors("Silver", "Silver", "Grey"))
-			}
-		};
-		private static List<ChestCrystalColorData> trapChestColors;
-		private static readonly Dictionary<string, Texture2D> cachedTextures = new();
+    class ChestReplacer
+    {
+        private static ChestReplacer instance;
+        private const string assetPath = $"{PluginInfo.PLUGIN_NAME}/Assets/";
+        private static readonly List<ChestCrystalColorData> chestCrystalColors = new()
+        {
+            { new("Key", true,
+                new ChestCrystalColorData.ChestColors("Yellow", "Gold", "Pearl"),
+                new ChestCrystalColorData.CrystalColors("Gold", "Gold", "Yellow"))
+            },
+            { new("Macguffin", true,
+                new ChestCrystalColorData.ChestColors("Purple", "Gold", "Pearl"),
+                new ChestCrystalColorData.CrystalColors("Purple", "Purple", "Yellow"))
+            },
+            { new("Major", true,
+                new ChestCrystalColorData.ChestColors("Green", "Gold", "Pearl"),
+                new ChestCrystalColorData.CrystalColors("Green", "Green", "Yellow"))
+            },
+            { new("Minor", true,
+                new ChestCrystalColorData.ChestColors("Blue", "Silver", "Gold"),
+                new ChestCrystalColorData.CrystalColors("Blue", "Blue", "Silver"))
+            },
+            { new("Shard", true,
+                new ChestCrystalColorData.ChestColors("DarkGrey", "Gold", "Grey"),
+                new ChestCrystalColorData.CrystalColors("DarkGrey", "DarkGrey", "Yellow"))
+            },
+            { new("Junk", true,
+                new ChestCrystalColorData.ChestColors("Burgundy", "DarkGrey", "Grey"),
+                new ChestCrystalColorData.CrystalColors("Burgundy", "Silver", "DarkGrey"))
+            },
+            { new("Filler", false,
+                new ChestCrystalColorData.ChestColors("Cyan", "DarkGrey", "Grey"),
+                new ChestCrystalColorData.CrystalColors("Cyan", "Cyan", "DarkGrey"))
+            },
+            { new("Useful", false,
+                new ChestCrystalColorData.ChestColors("Blue", "Silver", "Gold"),
+                new ChestCrystalColorData.CrystalColors("Blue", "Blue", "Silver"))
+            },
+            { new("Advancement", false,
+                new ChestCrystalColorData.ChestColors("Orange", "Yellow", "Gold"),
+                new ChestCrystalColorData.CrystalColors("Orange", "Orange", "Gold"))
+            },
+            { new("Empty", false,
+                new ChestCrystalColorData.ChestColors("LightGrey", "DarkGrey", "Grey"),
+                new ChestCrystalColorData.CrystalColors("Silver", "Silver", "DarkGrey"))
+            }
+        };
+        private static List<ChestCrystalColorData> trapChestColors;
+        private static readonly Dictionary<string, Texture2D> cachedTextures = new();
 
-		public static ChestReplacer Instance
-		{
-			get
-			{
-				if (instance == null)
-					instance = new();
+        public static ChestReplacer Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new();
 
-				return instance;
-			}
-		}
+                return instance;
+            }
+        }
 
-		public ChestReplacer()
-		{
-			if (trapChestColors == null)
-				trapChestColors = chestCrystalColors.FindAll(x => x.useForTraps);
-		}
+        public ChestReplacer()
+        {
+            if (trapChestColors == null)
+                trapChestColors = chestCrystalColors.FindAll(x => x.useForTraps);
+        }
 
-		public void ReplaceChestTextures(DummyAction dummyAction, Renderer chestMesh, Renderer crystalMesh)
-		{
-			ItemHandler.ItemData.Item item = ItemRandomizer.Instance.GetItemForLocation(SceneManager.GetActiveScene().name, dummyAction._saveName, out var scoutedItemInfo);
+        public void ReplaceChestTextures(DummyAction dummyAction, Renderer chestMesh, Renderer crystalMesh)
+        {
+            ItemHandler.ItemData.Item item = ItemRandomizer.Instance.GetItemForLocation(SceneManager.GetActiveScene().name, dummyAction._saveName, out var scoutedItemInfo);
 
-			// Leave vanilla if major, including region connectors
-			if (
-				item != null && (
-					CheckItemFlags(item, ItemHandler.ItemFlags.Major)
-					|| item.Type == ItemHandler.ItemTypes.RegionConnector
-				)
-			)
-				return;
+            // Leave chest appearance vanilla if major, including region connectors
+            if (
+                item != null && (
+                    CheckItemFlags(item, ItemHandler.ItemFlags.Major)
+                    || item.Type == ItemHandler.ItemTypes.RegionConnector
+                )
+            ) {
+                // make sure it's a green/gold crystal
+                if (crystalMesh != null) {
+                    SetCrystalTextures(crystalMesh, new ChestCrystalColorData.CrystalColors("Green", "Green", "Gold"));
+                }
+                return;
+            }
 
-			ChestCrystalColorData colors = null;
+            ChestCrystalColorData colors = null;
 
-			if (scoutedItemInfo != null)
-			{
-				// If trap
-				if (CheckItemFlags(scoutedItemInfo, Archipelago.MultiClient.Net.Enums.ItemFlags.Trap))
-				{
-					// Get random colors
-					int randIndex = Random.Range(0, trapChestColors.Count);
+            if (scoutedItemInfo != null)
+            {
+                // Major items
+                if (
+                    CheckItemFlags(item, ItemHandler.ItemFlags.Major)
+                    || item.Type == ItemHandler.ItemTypes.RegionConnector
+                ) {
+                    colors = chestCrystalColors.Find(x => x.flag == "Major");
+                }
 
-					// Major item color
-					if (randIndex >= trapChestColors.Count)
-						return;
+                // If trap
+                if (CheckItemFlags(scoutedItemInfo, Archipelago.MultiClient.Net.Enums.ItemFlags.Trap))
+                {
+                    // Get random colors
+                    int randIndex = Random.Range(0, trapChestColors.Count);
 
-					colors = trapChestColors[randIndex];
-					Vector3 rot = dummyAction.transform.localEulerAngles;
-					dummyAction.transform.localEulerAngles = new Vector3(rot.x, rot.y + 180, rot.z);
-				}
-				// If ID2 item
-				else if (item != null)
-				{
-					if (item.Type == ItemHandler.ItemTypes.Key || item.Type == ItemHandler.ItemTypes.Keyring)
-						colors = chestCrystalColors.Find(x => x.flag == "Key");
-					else if (item.Type == ItemHandler.ItemTypes.Shard)
-						colors = chestCrystalColors.Find(x => x.flag == item.Type.ToString());
-					else if (item.Type == ItemHandler.ItemTypes.RegionConnector)
-						colors = chestCrystalColors.Find(x => x.flag == item.Type.ToString());
-					else
-						colors = chestCrystalColors.Find(x => x.flag == item.Flag.ToString());
-				}
-				// If item for another game or is a trap
-				else
-				{
-					if (CheckItemFlags(scoutedItemInfo, Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement))
-						colors = chestCrystalColors.Find(x => x.flag == scoutedItemInfo.Flags.ToString());
-					else if (CheckItemFlags(scoutedItemInfo, Archipelago.MultiClient.Net.Enums.ItemFlags.NeverExclude))
-						colors = chestCrystalColors.Find(x => x.flag == "Useful");
-				}
-			}
-			// If no item, that means it's not randomized
-			else
-				colors = chestCrystalColors.Find(x => x.flag == "Empty");
+                    // Major item color
+                    if (randIndex >= trapChestColors.Count)
+                        return;
 
-			// If item exists, but has no flags/type, it's filler
-			if (colors == null)
-				colors = chestCrystalColors.Find(x => x.flag == "Filler");
+                    colors = trapChestColors[randIndex];
+                    Vector3 rot = dummyAction.transform.localEulerAngles;
+                    dummyAction.transform.localEulerAngles = new Vector3(rot.x, rot.y + 180, rot.z);
+                }
+                // If ID2 item
+                else if (item != null)
+                {
+                    if (item.Type == ItemHandler.ItemTypes.Key || item.Type == ItemHandler.ItemTypes.Keyring)
+                        colors = chestCrystalColors.Find(x => x.flag == "Key");
+                    else if (item.Type == ItemHandler.ItemTypes.Shard)
+                        colors = chestCrystalColors.Find(x => x.flag == item.Type.ToString());
+                    else
+                        colors = chestCrystalColors.Find(x => x.flag == item.Flag.ToString());
+                }
+                // If item for another game or is a trap
+                else
+                {
+                    if (CheckItemFlags(scoutedItemInfo, Archipelago.MultiClient.Net.Enums.ItemFlags.Advancement))
+                        colors = chestCrystalColors.Find(x => x.flag == "Advancement");
+                    else if (CheckItemFlags(scoutedItemInfo, Archipelago.MultiClient.Net.Enums.ItemFlags.NeverExclude))
+                        colors = chestCrystalColors.Find(x => x.flag == "Useful");
+                }
+            }
+            // If no item, that means it's not randomized
+            else
+                colors = chestCrystalColors.Find(x => x.flag == "Empty");
 
-			SetChestTextures(chestMesh, colors.chestColors);
+            // If item exists, but has no flags/type, it's filler
+            if (colors == null)
+                colors = chestCrystalColors.Find(x => x.flag == "Filler");
 
-			if (crystalMesh != null)
-				SetCrystalTextures(crystalMesh, colors.crystalColors);
-		}
+            SetChestTextures(chestMesh, colors.chestColors);
 
-		private void SetChestTextures(Renderer mesh, ChestCrystalColorData.ChestColors colors)
-		{
-			Material chestMaterial = mesh.materials[2];
-			Material trimMaterial = mesh.materials[1];
-			Texture2D chestTexture = GetCachedTexture(colors.color);
-			Texture2D trimTexture = GetCachedTexture(colors.trimColor);
-			Texture2D shineTexture = GetCachedTexture(colors.shineColor);
+            if (crystalMesh != null)
+                SetCrystalTextures(crystalMesh, colors.crystalColors);
+        }
 
-			chestMaterial.SetTexture("_MainTex", chestTexture);
-			trimMaterial.SetTexture("_MainTex", trimTexture);
-			trimMaterial.SetTexture("_SpecularRamp", shineTexture);
-		}
+        private void SetChestTextures(Renderer mesh, ChestCrystalColorData.ChestColors colors)
+        {
+            Material chestMaterial = mesh.materials[2];
+            Material trimMaterial = mesh.materials[1];
+            Texture2D chestTexture = GetCachedTexture(colors.color);
+            Texture2D trimTexture = GetCachedTexture(colors.trimColor);
+            Texture2D shineTexture = GetCachedTexture(colors.shineColor);
 
-		private void SetCrystalTextures(Renderer mesh, ChestCrystalColorData.CrystalColors colors)
-		{
-			Material faceMaterial = mesh.materials[0];
-			Material edgeMaterial = mesh.materials[1];
-			Texture2D faceRampTexture = GetCachedTexture(colors.faceRamp);
-			Texture2D faceRimTexture = GetCachedTexture(colors.faceRim);
-			Texture2D edgeTexture = GetCachedTexture(colors.edgeColor);
+            chestMaterial.SetTexture("_MainTex", chestTexture);
+            trimMaterial.SetTexture("_MainTex", trimTexture);
+            trimMaterial.SetTexture("_SpecularRamp", shineTexture);
+        }
 
-			edgeMaterial.shader = Shader.Find("Unlit/Texture");
-			edgeMaterial.SetTexture("_MainTex", edgeTexture);
-			faceMaterial.SetTexture("_SpecularRamp", faceRimTexture);
-			faceMaterial.SetTexture("_RimRamp", faceRampTexture);
-		}
+        private void SetCrystalTextures(Renderer mesh, ChestCrystalColorData.CrystalColors colors)
+        {
+            Material faceMaterial = mesh.materials[0];
+            Material edgeMaterial = mesh.materials[1];
+            Texture2D faceRampTexture = GetCachedTexture(colors.faceRamp);
+            Texture2D faceRimTexture = GetCachedTexture(colors.faceRim);
+            Texture2D edgeTexture = GetCachedTexture(colors.edgeColor);
 
-		private Texture2D GetCachedTexture(string color)
-		{
-			if (!cachedTextures.TryGetValue(color, out Texture2D texture))
-			{
-				// Load & cache texture
-				string path = $"{assetPath}Chest{color}.png";
-				texture = ModCore.Utility.GetTextureFromFile(path);
-				cachedTextures.Add(color, texture);
-			}
+            edgeMaterial.shader = Shader.Find("Unlit/Texture");
+            edgeMaterial.SetTexture("_MainTex", edgeTexture);
+            faceMaterial.SetTexture("_SpecularRamp", faceRimTexture);
+            faceMaterial.SetTexture("_RimRamp", faceRampTexture);
+        }
 
-			return texture;
-		}
+        private Texture2D GetCachedTexture(string color)
+        {
+            if (!cachedTextures.TryGetValue(color, out Texture2D texture))
+            {
+                // Load & cache texture
+                string path = $"{assetPath}Chest{color}.png";
+                texture = ModCore.Utility.GetTextureFromFile(path);
+                cachedTextures.Add(color, texture);
+            }
 
-		private bool CheckItemFlags(ItemHandler.ItemData.Item item, ItemHandler.ItemFlags flag)
-		{
-			return (item.Flag & flag) == flag;
-		}
+            return texture;
+        }
 
-		private bool CheckItemFlags(Archipelago.MultiClient.Net.Models.ScoutedItemInfo item, Archipelago.MultiClient.Net.Enums.ItemFlags flag)
-		{
-			return (item.Flags & flag) == flag;
-		}
+        private bool CheckItemFlags(ItemHandler.ItemData.Item item, ItemHandler.ItemFlags flag)
+        {
+            return (item.Flag & flag) == flag;
+        }
 
-		private class ChestCrystalColorData
-		{
-			public readonly string flag;
-			public readonly bool useForTraps;
-			public readonly ChestColors chestColors;
-			public readonly CrystalColors crystalColors;
+        private bool CheckItemFlags(Archipelago.MultiClient.Net.Models.ScoutedItemInfo item, Archipelago.MultiClient.Net.Enums.ItemFlags flag)
+        {
+            return (item.Flags & flag) == flag;
+        }
 
-			public ChestCrystalColorData(string flag, bool useForTraps, ChestColors chestColors, CrystalColors crystalColors)
-			{
-				this.flag = flag;
-				this.useForTraps = useForTraps;
-				this.chestColors = chestColors;
-				this.crystalColors = crystalColors;
-			}
+        private class ChestCrystalColorData
+        {
+            public readonly string flag;
+            public readonly bool useForTraps;
+            public readonly ChestColors chestColors;
+            public readonly CrystalColors crystalColors;
 
-			public readonly struct ChestColors
-			{
-				public readonly string color;
-				public readonly string trimColor;
-				public readonly string shineColor;
+            public ChestCrystalColorData(string flag, bool useForTraps, ChestColors chestColors, CrystalColors crystalColors)
+            {
+                this.flag = flag;
+                this.useForTraps = useForTraps;
+                this.chestColors = chestColors;
+                this.crystalColors = crystalColors;
+            }
 
-				public ChestColors(string color, string trimColor, string shineColor)
-				{
-					this.color = color;
-					this.trimColor = trimColor;
-					this.shineColor = "Rim" + shineColor;
-				}
-			}
+            public readonly struct ChestColors
+            {
+                public readonly string color;
+                public readonly string trimColor;
+                public readonly string shineColor;
 
-			public readonly struct CrystalColors
-			{
-				public readonly string faceRamp;
-				public readonly string faceRim;
-				public readonly string edgeColor;
+                public ChestColors(string color, string trimColor, string shineColor)
+                {
+                    this.color = color;
+                    this.trimColor = trimColor;
+                    this.shineColor = "Rim" + shineColor;
+                }
+            }
 
-				public CrystalColors(string faceRamp, string faceRim, string edgeColor)
-				{
-					this.faceRamp = "Jewel" + faceRamp;
-					this.faceRim = "CrystalRim" + faceRim;
-					this.edgeColor = edgeColor;
-				}
-			}
-		}
-	}
+            public readonly struct CrystalColors
+            {
+                public readonly string faceRamp;
+                public readonly string faceRim;
+                public readonly string edgeColor;
+
+                public CrystalColors(string faceRamp, string faceRim, string edgeColor)
+                {
+                    this.faceRamp = "Jewel" + faceRamp;
+                    this.faceRim = "CrystalRim" + faceRim;
+                    this.edgeColor = edgeColor;
+                }
+            }
+        }
+    }
 }
