@@ -138,6 +138,7 @@ namespace ArchipelagoRandomizer
 
             GameObject model = GameObject.Instantiate(GameObject.Find("LevelRoot").transform.Find(data.path).gameObject);
             Object.Destroy(model.GetComponent<Animator>());
+
             return GenerateModelPrefab(model, data, itemName);
         }
 
@@ -202,6 +203,9 @@ namespace ArchipelagoRandomizer
                 AddModelPreview(data.copyTo, model);
             }
 
+            // changed by elia: model previews are not active when they are loaded
+            // fixes the "spinning pile of junk at the origin" bug
+            model.SetActive(false);
             return model;
         }
 
